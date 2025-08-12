@@ -9,8 +9,11 @@ function CategoryProducts() {
   useEffect(() => {
     fetch(`https://fakestoreapi.com/products/category/${categoryName}`)
       .then((res) => res.json())
-      .then((data) => setProducts(data))
-      .catch((err) => console.error(err));
+      .then((data) => {
+        console.log("Fetched products:", data); // Debug log
+        setProducts(data);
+      })
+      .catch((err) => console.error("Error fetching category products:", err));
   }, [categoryName]);
 
   return (
@@ -63,12 +66,17 @@ function CategoryProducts() {
             onClick={() => navigate(`/product/${product.id}`)}
           >
             <img
-              src={product.image}
+              src={product.image || 'https://via.placeholder.com/250x200?text=No+Image'}
               alt={product.title}
               style={{
+                width: "100%",
+                maxWidth: "250px",
                 height: "200px",
                 objectFit: "contain",
                 marginBottom: "15px",
+                display: "block",
+                marginLeft: "auto",
+                marginRight: "auto",
               }}
             />
             <div
