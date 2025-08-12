@@ -1,9 +1,9 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
-import CartPage from "./components/CartPage";
-import ProductList from "./components/ProductList";
-import ProductDetails from "./components/ProductDetails";
+import CartPage from "./pages/CartPage";
+import ProductList from "./pages/ProductList";
+import ProductDetails from "./pages/ProductDetails";
 import CategoryList from "./components/CategoryList";
 import CategoryProducts from "./components/CategoryProducts";
 

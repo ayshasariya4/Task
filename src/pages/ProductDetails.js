@@ -6,6 +6,11 @@ function ProductDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
+  const [cart, setCart] = useState(() => {
+    // Load cart from localStorage if exists, else empty array
+    const savedCart = localStorage.getItem("cart");
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
 
   useEffect(() => {
     fetch(`https://fakestoreapi.com/products/${id}`)
@@ -14,7 +19,24 @@ function ProductDetails() {
       .catch((err) => console.error(err));
   }, [id]);
 
+  // Save cart to localStorage on update
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }, [cart]);
+
   const handleAddToCart = () => {
+    setCart((prevCart) => {
+      const itemIndex = prevCart.findIndex((item) => item.id === product.id);
+      if (itemIndex !== -1) {
+        // If product already in cart, increase quantity
+        const newCart = [...prevCart];
+        newCart[itemIndex].quantity += 1;
+        return newCart;
+      } else {
+        // Else add new product with quantity 1
+        return [...prevCart, { ...product, quantity: 1 }];
+      }
+    });
     alert(`Added "${product.title}" to cart!`);
   };
 

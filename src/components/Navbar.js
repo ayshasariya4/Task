@@ -90,15 +90,7 @@ function Navbar() {
           <FaHome /> Home
         </Link>
 
-        <Link
-          to="/categories"
-          style={linkStyle}
-          onMouseEnter={(e) => (e.currentTarget.style.color = "#FFD700")}
-          onMouseLeave={(e) => (e.currentTarget.style.color = "white")}
-          onClick={() => setMenuOpen(false)}
-        >
-          <FaListUl /> Categories
-        </Link>
+    
 
         <a
           href="/cart"
