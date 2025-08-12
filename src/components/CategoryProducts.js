@@ -7,7 +7,8 @@ function CategoryProducts() {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    fetch(`https://fakestoreapi.com/products/category/${categoryName}`)
+    // Encode categoryName to handle spaces/special chars
+    fetch(`https://fakestoreapi.com/products/category/${encodeURIComponent(categoryName)}`)
       .then((res) => res.json())
       .then((data) => {
         console.log("Fetched products:", data); // Debug log
@@ -66,7 +67,11 @@ function CategoryProducts() {
             onClick={() => navigate(`/product/${product.id}`)}
           >
             <img
-              src={product.image || 'https://via.placeholder.com/250x200?text=No+Image'}
+              src={
+                product.image
+                  ? product.image
+                  : "https://via.placeholder.com/250x200?text=No+Image"
+              }
               alt={product.title}
               style={{
                 width: "100%",
@@ -86,11 +91,14 @@ function CategoryProducts() {
                 color: "#333",
                 marginBottom: "8px",
               }}
+              title={product.title}
             >
-              {product.title}
+              {product.title.length > 50
+                ? product.title.slice(0, 47) + "..."
+                : product.title}
             </div>
-            <div style={{ color: "#28a745", fontWeight: "bold" }}>
-              ${product.price}
+            <div style={{ color: "#28a745", fontWeight: "bold", fontSize: "1.1rem" }}>
+              ${product.price.toFixed(2)}
             </div>
           </div>
         ))}

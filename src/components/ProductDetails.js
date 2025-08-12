@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { FaShoppingCart } from "react-icons/fa";
 
 function ProductDetails() {
   const { id } = useParams();
@@ -13,66 +14,175 @@ function ProductDetails() {
       .catch((err) => console.error(err));
   }, [id]);
 
+  const handleAddToCart = () => {
+    alert(`Added "${product.title}" to cart!`);
+  };
+
   if (!product) {
-    return <p style={{ textAlign: "center" }}>Loading product...</p>;
+    return <p style={{ textAlign: "center", marginTop: 50 }}>Loading product...</p>;
   }
 
   return (
-    <div style={{ padding: "30px", background: "#f8f9fa", minHeight: "100vh" }}>
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#f5f7fa",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        padding: "20px",
+        fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+      }}
+    >
       <div
         style={{
-          background: "white",
           maxWidth: "900px",
-          margin: "auto",
-          padding: "30px",
-          borderRadius: "12px",
-          boxShadow: "0px 4px 15px rgba(0,0,0,0.08)",
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "30px",
+          width: "100%",
+          display: "flex",
+          flexDirection: "row",
+          gap: "40px",
+          alignItems: "center",
+          padding: "0 10px",
         }}
       >
+        {/* Image */}
         <img
           src={product.image}
           alt={product.title}
           style={{
             maxWidth: "100%",
-            height: "400px",
+            maxHeight: "400px",
             objectFit: "contain",
-            borderRadius: "10px",
+            flex: "1 1 0",
+            userSelect: "none",
           }}
         />
-        <div>
-          <h2 style={{ marginBottom: "10px" }}>{product.title}</h2>
-          <div
+
+        {/* Details */}
+        <div
+          style={{
+            flex: "1 1 0",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+          }}
+        >
+          <h1
             style={{
-              color: "#28a745",
-              fontWeight: "bold",
-              fontSize: "1.5em",
+              fontSize: "2rem",
+              fontWeight: "700",
               marginBottom: "15px",
+              color: "#222",
+              lineHeight: 1.2,
             }}
           >
-            ${product.price}
-          </div>
-          <p style={{ color: "#555", lineHeight: "1.6" }}>
+            {product.title}
+          </h1>
+
+          <p
+            style={{
+              color: "#6b7280",
+              fontSize: "1rem",
+              marginBottom: "25px",
+              lineHeight: "1.6",
+              minHeight: "90px",
+            }}
+          >
             {product.description}
           </p>
+
+          <div
+            style={{
+              fontWeight: "700",
+              fontSize: "1.8rem",
+              color: "#10b981",
+              marginBottom: "35px",
+              letterSpacing: "0.03em",
+            }}
+          >
+            ${product.price.toFixed(2)}
+          </div>
+
+          <button
+            onClick={handleAddToCart}
+            style={{
+              backgroundColor: "#2563eb",
+              color: "white",
+              padding: "15px 30px",
+              borderRadius: "10px",
+              border: "none",
+              fontWeight: "600",
+              fontSize: "1.1rem",
+              cursor: "pointer",
+              boxShadow: "0 6px 15px rgba(37, 99, 235, 0.4)",
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+              transition: "background-color 0.3s ease, box-shadow 0.3s ease",
+              userSelect: "none",
+              maxWidth: "220px",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "#1d4ed8";
+              e.currentTarget.style.boxShadow = "0 8px 20px rgba(29, 78, 216, 0.6)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "#2563eb";
+              e.currentTarget.style.boxShadow = "0 6px 15px rgba(37, 99, 235, 0.4)";
+            }}
+          >
+            <FaShoppingCart size={20} />
+            Add to Cart
+          </button>
+
           <button
             onClick={() => navigate(-1)}
             style={{
-              marginTop: "20px",
-              padding: "10px 15px",
-              background: "#007BFF",
-              color: "white",
-              border: "none",
-              borderRadius: "5px",
+              marginTop: "25px",
+              background: "transparent",
+              border: "2px solid #2563eb",
+              borderRadius: "10px",
+              padding: "12px 25px",
+              fontWeight: "600",
+              fontSize: "1rem",
+              color: "#2563eb",
               cursor: "pointer",
+              transition: "all 0.3s ease",
+              userSelect: "none",
+              maxWidth: "220px",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "#2563eb";
+              e.currentTarget.style.color = "white";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "transparent";
+              e.currentTarget.style.color = "#2563eb";
             }}
           >
-            ⬅ Back
+            ← Back to Products
           </button>
         </div>
       </div>
+
+      {/* Responsive Styles */}
+      <style>{`
+        @media (max-width: 768px) {
+          div[style*="flex-direction: row"] {
+            flex-direction: column !important;
+          }
+          div[style*="gap: 40px"] {
+            gap: 20px !important;
+          }
+          img {
+            max-height: 300px !important;
+            margin-bottom: 20px;
+          }
+          button {
+            max-width: 100% !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }
