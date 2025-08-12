@@ -1,15 +1,14 @@
 import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { FaHome, FaShoppingCart, FaStore, FaBars, FaTimes } from "react-icons/fa";
-import { CartContext } from "../context/CartContext"; // ✅ Correct path to your context
+import { CartContext } from "../context/CartContext";
 
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const { cart } = useContext(CartContext); // ✅ Access cart state
+  const { cart } = useContext(CartContext);
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
-  // Calculate total quantity
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
 
   const linkStyle = {
@@ -69,7 +68,10 @@ function Navbar() {
       </div>
 
       {/* Links */}
-      <div className={`nav-links ${menuOpen ? "open" : ""}`} style={{ display: "flex", gap: "20px", alignItems: "center" }}>
+      <div
+        className={`nav-links ${menuOpen ? "open" : ""}`}
+        style={{ display: "flex", gap: "20px", alignItems: "center" }}
+      >
         <Link to="/" style={linkStyle} onClick={() => setMenuOpen(false)}>
           <FaHome /> Home
         </Link>
@@ -80,10 +82,11 @@ function Navbar() {
           Cart
           {cartCount > 0 && (
             <span
+              className="cart-badge"
               style={{
                 position: "absolute",
-                top: "2px",
-                right: "5px",
+                top: "3px",
+                right: "2px",
                 background: "red",
                 color: "white",
                 borderRadius: "50%",
@@ -120,6 +123,13 @@ function Navbar() {
             border-top: 1px solid rgba(255,255,255,0.2);
             width: 100%;
             justify-content: center;
+          }
+
+          /* Move cart badge above cart icon on mobile */
+          .cart-badge {
+            top: -12px !important;
+            right: 50% !important;
+            transform: translateX(50%);
           }
         }
       `}</style>

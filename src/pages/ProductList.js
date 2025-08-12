@@ -53,16 +53,7 @@ function ProductList() {
     navigate(`/category/${encodeURIComponent(category)}`);
   };
 
-  const categoryImages = {
-    electronics:
-      "https://cdn-icons-png.flaticon.com/512/2748/2748558.png",
-    jewelery:
-      "https://cdn-icons-png.flaticon.com/512/3064/3064197.png",
-    "men's clothing":
-      "https://cdn-icons-png.flaticon.com/512/1946/1946488.png",
-    "women's clothing":
-      "https://cdn-icons-png.flaticon.com/512/888/888857.png",
-  };
+
 
   return (
     <div style={{ padding: "30px", background: "#f8f9fa", minHeight: "100vh" }}>
