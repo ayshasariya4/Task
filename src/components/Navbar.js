@@ -24,7 +24,7 @@ function Navbar() {
   return (
     <nav
       style={{
-        background: "#1a1a1a",
+        background: "#007bff",
         color: "white",
         padding: "10px 20px",
         position: "sticky",
@@ -101,7 +101,7 @@ function Navbar() {
         </Link>
 
         <a
-          href="#cart"
+          href="/cart"
           style={linkStyle}
           onMouseEnter={(e) => (e.currentTarget.style.color = "#FFD700")}
           onMouseLeave={(e) => (e.currentTarget.style.color = "white")}
