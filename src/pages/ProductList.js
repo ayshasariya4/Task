@@ -1,13 +1,16 @@
-// ProductList.jsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaHeart, FaRegHeart, FaShoppingCart, FaEye } from "react-icons/fa";
+import { CartContext } from "../context/CartContext";  // Adjust path as per your structure
 
 function ProductList() {
   const [products, setProducts] = useState([]);
   const [wishlist, setWishlist] = useState([]);
   const [categories, setCategories] = useState([]);
   const navigate = useNavigate();
+
+  // Access addToCart from CartContext
+  const { addToCart } = useContext(CartContext);
 
   // Fetch products
   useEffect(() => {
@@ -34,31 +37,16 @@ function ProductList() {
     );
   };
 
-  const addToCart = (product, e) => {
-  e.stopPropagation();
-
-  // Get existing cart items from localStorage or start empty
-  const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
-
-  // Check if product already in cart
-  const index = existingCart.findIndex((item) => item.id === product.id);
-
-  if (index >= 0) {
-    // If exists, increase quantity
-    existingCart[index].quantity += 1;
-  } else {
-    // Else, add new product with quantity 1
-    existingCart.push({ ...product, quantity: 1 });
-  }
-
-  // Save updated cart back to localStorage
-  localStorage.setItem("cart", JSON.stringify(existingCart));
-  alert(`Added "${product.title}" to cart!`);
-};
+  // Use addToCart from context and show alert
+  const handleAddToCart = (product, e) => {
+    e.stopPropagation();
+    addToCart(product);
+    alert(`Added "${product.title}" to cart!`);
+  };
 
   const viewProduct = (id, e) => {
     e.stopPropagation();
-    navigate(`/product/${id}`); // You can add a product detail route later
+    navigate(`/product/${id}`);
   };
 
   const handleCategoryClick = (category) => {
@@ -78,71 +66,9 @@ function ProductList() {
 
   return (
     <div style={{ padding: "30px", background: "#f8f9fa", minHeight: "100vh" }}>
-      {/* Category Circles */}
-      <div
-        style={{
-          display: "flex",
-          gap: "25px",
-          justifyContent: "center",
-          flexWrap: "wrap",
-          marginBottom: "40px",
-        }}
-      >
-        {/* {categories.map((category) => (
-          <div
-            key={category}
-            onClick={() => handleCategoryClick(category)}
-            style={{
-              cursor: "pointer",
-              backgroundColor: "#007bff",
-              color: "white",
-              borderRadius: "50%",
-              width: "110px",
-              height: "110px",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              fontWeight: "600",
-              fontSize: "1.1rem",
-              textAlign: "center",
-              padding: "10px",
-              boxShadow: "0 4px 10px rgba(0,123,255,0.4)",
-              userSelect: "none",
-              textTransform: "capitalize",
-              transition: "all 0.3s ease",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = "#0056b3";
-              e.currentTarget.style.boxShadow = "0 6px 16px rgba(0,86,179,0.6)";
-              e.currentTarget.style.transform = "scale(1.1)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = "#007bff";
-              e.currentTarget.style.boxShadow = "0 4px 10px rgba(0,123,255,0.4)";
-              e.currentTarget.style.transform = "scale(1)";
-            }}
-            title={`View products in ${category}`}
-          >
-            <img
-              src={
-                categoryImages[category] ||
-                "https://cdn-icons-png.flaticon.com/512/565/565547.png"
-              }
-              alt={category}
-              style={{
-                width: "40px",
-                height: "40px",
-                marginBottom: "6px",
-                filter: "brightness(0) invert(1)",
-              }}
-            />
-            {category}
-          </div>
-        ))} */}
-      </div>
+      {/* Category Circles (optional, commented in your original) */}
+      {/* ... */}
 
-      {/* Featured Products */}
       <h1 style={{ textAlign: "center", marginBottom: "30px", color: "#333" }}>
         Featured Products
       </h1>
@@ -285,7 +211,7 @@ function ProductList() {
 
                 {/* Add to Cart Icon */}
                 <div
-                  onClick={(e) => addToCart(product, e)}
+                  onClick={(e) => handleAddToCart(product, e)}
                   title="Add to Cart"
                   style={{
                     cursor: "pointer",

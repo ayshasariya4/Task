@@ -1,14 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
-import { FaHome, FaListUl, FaShoppingCart, FaStore, FaBars, FaTimes } from "react-icons/fa";
+import { FaHome, FaShoppingCart, FaStore, FaBars, FaTimes } from "react-icons/fa";
+import { CartContext } from "../context/CartContext"; // ✅ Correct path to your context
 
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { cart } = useContext(CartContext); // ✅ Access cart state
 
-  // Toggle menu visibility on small screens
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
-  // Common link styles
+  // Calculate total quantity
+  const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
+
   const linkStyle = {
     textDecoration: "none",
     color: "white",
@@ -19,6 +22,7 @@ function Navbar() {
     padding: "10px 15px",
     cursor: "pointer",
     transition: "color 0.3s ease",
+    position: "relative",
   };
 
   return (
@@ -55,60 +59,49 @@ function Navbar() {
         FakeStore
       </Link>
 
-      {/* Hamburger Icon for small screens */}
+      {/* Hamburger menu */}
       <div
         onClick={toggleMenu}
-        style={{
-          display: "none",
-          fontSize: "1.5rem",
-          cursor: "pointer",
-        }}
+        style={{ display: "none", fontSize: "1.5rem", cursor: "pointer" }}
         className="hamburger"
-        aria-label="Toggle menu"
       >
         {menuOpen ? <FaTimes /> : <FaBars />}
       </div>
 
-      {/* Navigation Links */}
-      <div
-        style={{
-          display: "flex",
-          gap: "20px",
-          alignItems: "center",
-
-          // Responsive styles (will be overridden by CSS below)
-        }}
-        className={`nav-links ${menuOpen ? "open" : ""}`}
-      >
-        <Link
-          to="/"
-          style={linkStyle}
-          onMouseEnter={(e) => (e.currentTarget.style.color = "#FFD700")}
-          onMouseLeave={(e) => (e.currentTarget.style.color = "white")}
-          onClick={() => setMenuOpen(false)}
-        >
+      {/* Links */}
+      <div className={`nav-links ${menuOpen ? "open" : ""}`} style={{ display: "flex", gap: "20px", alignItems: "center" }}>
+        <Link to="/" style={linkStyle} onClick={() => setMenuOpen(false)}>
           <FaHome /> Home
         </Link>
 
-    
-
-        <a
-          href="/cart"
-          style={linkStyle}
-          onMouseEnter={(e) => (e.currentTarget.style.color = "#FFD700")}
-          onMouseLeave={(e) => (e.currentTarget.style.color = "white")}
-          onClick={() => setMenuOpen(false)}
-        >
-          <FaShoppingCart /> Cart
-        </a>
+        {/* Cart with badge */}
+        <Link to="/cart" style={linkStyle} onClick={() => setMenuOpen(false)}>
+          <FaShoppingCart />
+          Cart
+          {cartCount > 0 && (
+            <span
+              style={{
+                position: "absolute",
+                top: "2px",
+                right: "5px",
+                background: "red",
+                color: "white",
+                borderRadius: "50%",
+                fontSize: "0.7rem",
+                fontWeight: "bold",
+                padding: "2px 6px",
+                lineHeight: 1,
+              }}
+            >
+              {cartCount}
+            </span>
+          )}
+        </Link>
       </div>
 
-      {/* Inline CSS for responsive hamburger menu */}
+      {/* Responsive styles */}
       <style>{`
         @media (max-width: 768px) {
-          nav {
-            padding: 10px 15px;
-          }
           .hamburger {
             display: block !important;
           }
@@ -120,9 +113,9 @@ function Navbar() {
             transition: max-height 0.3s ease;
           }
           .nav-links.open {
-            max-height: 300px; /* Enough to show all links */
+            max-height: 300px;
           }
-          .nav-links a, .nav-links .router-link-active {
+          .nav-links a {
             padding: 10px 0;
             border-top: 1px solid rgba(255,255,255,0.2);
             width: 100%;

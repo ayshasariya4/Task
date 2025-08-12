@@ -1,16 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FaShoppingCart } from "react-icons/fa";
+import { CartContext } from "../context/CartContext";
 
 function ProductDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
-  const [cart, setCart] = useState(() => {
-    // Load cart from localStorage if exists, else empty array
-    const savedCart = localStorage.getItem("cart");
-    return savedCart ? JSON.parse(savedCart) : [];
-  });
+  const { addToCart } = useContext(CartContext);
 
   useEffect(() => {
     fetch(`https://fakestoreapi.com/products/${id}`)
@@ -18,27 +15,6 @@ function ProductDetails() {
       .then((data) => setProduct(data))
       .catch((err) => console.error(err));
   }, [id]);
-
-  // Save cart to localStorage on update
-  useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart]);
-
-  const handleAddToCart = () => {
-    setCart((prevCart) => {
-      const itemIndex = prevCart.findIndex((item) => item.id === product.id);
-      if (itemIndex !== -1) {
-        // If product already in cart, increase quantity
-        const newCart = [...prevCart];
-        newCart[itemIndex].quantity += 1;
-        return newCart;
-      } else {
-        // Else add new product with quantity 1
-        return [...prevCart, { ...product, quantity: 1 }];
-      }
-    });
-    alert(`Added "${product.title}" to cart!`);
-  };
 
   if (!product) {
     return <p style={{ textAlign: "center", marginTop: 50 }}>Loading product...</p>;
@@ -67,7 +43,7 @@ function ProductDetails() {
           padding: "0 10px",
         }}
       >
-        {/* Image */}
+        {/* Product Image */}
         <img
           src={product.image}
           alt={product.title}
@@ -80,7 +56,7 @@ function ProductDetails() {
           }}
         />
 
-        {/* Details */}
+        {/* Product Details */}
         <div
           style={{
             flex: "1 1 0",
@@ -125,8 +101,13 @@ function ProductDetails() {
             ${product.price.toFixed(2)}
           </div>
 
+          {/* Add to Cart Button */}
           <button
-            onClick={handleAddToCart}
+        onClick={() => {
+  addToCart(product);
+  alert(`Added "${product.title}" to cart!`);
+}}
+
             style={{
               backgroundColor: "#2563eb",
               color: "white",
@@ -157,6 +138,7 @@ function ProductDetails() {
             Add to Cart
           </button>
 
+          {/* Back Button */}
           <button
             onClick={() => navigate(-1)}
             style={{
