@@ -5,13 +5,11 @@ function CartPage() {
   const [cartItems, setCartItems] = useState([]);
   const navigate = useNavigate();
 
-  // Load cart from localStorage on mount
   useEffect(() => {
     const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
     setCartItems(storedCart);
   }, []);
 
-  // Update cart in localStorage and state
   const updateQuantity = (productId, delta) => {
     setCartItems((prev) => {
       const updated = prev.map((item) =>
@@ -24,14 +22,12 @@ function CartPage() {
     });
   };
 
-  // Remove item from cart
   const removeFromCart = (productId) => {
     const updated = cartItems.filter((item) => item.id !== productId);
     setCartItems(updated);
     localStorage.setItem("cart", JSON.stringify(updated));
   };
 
-  // Calculate total price
   const totalPrice = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
@@ -47,79 +43,107 @@ function CartPage() {
   }
 
   return (
-    <div style={{ padding: "30px", maxWidth: "900px", margin: "auto" }}>
-      <h1>Shopping Cart</h1>
-      <table
-        style={{
-          width: "100%",
-          borderCollapse: "collapse",
-          marginTop: "20px",
-          marginBottom: "40px",
-        }}
-      >
-        <thead>
-          <tr style={{ borderBottom: "2px solid #ccc" }}>
-            <th style={{ textAlign: "left", padding: "10px" }}>Product</th>
-            <th style={{ textAlign: "center", padding: "10px" }}>Price</th>
-            <th style={{ textAlign: "center", padding: "10px" }}>Quantity</th>
-            <th style={{ textAlign: "center", padding: "10px" }}>Subtotal</th>
-            <th style={{ padding: "10px" }}>Remove</th>
-          </tr>
-        </thead>
-        <tbody>
-          {cartItems.map(({ id, title, price, quantity, image }) => (
-            <tr key={id} style={{ borderBottom: "1px solid #eee" }}>
-              <td style={{ padding: "10px", display: "flex", alignItems: "center" }}>
-                <img
-                  src={image}
-                  alt={title}
-                  style={{ height: "50px", marginRight: "15px", objectFit: "contain" }}
-                />
-                <span>{title.length > 40 ? title.slice(0, 37) + "..." : title}</span>
-              </td>
-              <td style={{ textAlign: "center" }}>${price.toFixed(2)}</td>
-              <td style={{ textAlign: "center" }}>
-                <button
-                  onClick={() => updateQuantity(id, -1)}
-                  style={{ marginRight: "10px" }}
-                >
-                  -
-                </button>
-                {quantity}
-                <button
-                  onClick={() => updateQuantity(id, +1)}
-                  style={{ marginLeft: "10px" }}
-                >
-                  +
-                </button>
-              </td>
-              <td style={{ textAlign: "center" }}>
-                ${(price * quantity).toFixed(2)}
-              </td>
-              <td style={{ textAlign: "center" }}>
-                <button onClick={() => removeFromCart(id)}>X</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <h2 style={{ textAlign: "right" }}>Total: ${totalPrice.toFixed(2)}</h2>
-      <div style={{ textAlign: "right", marginTop: "20px" }}>
-        <button
-          onClick={() => alert("Proceed to checkout (not implemented)")}
-          style={{
-            padding: "10px 20px",
-            backgroundColor: "#007bff",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
-        >
-          Checkout
-        </button>
+    <>
+      <style>{`
+        /* Make table container scrollable horizontally on small screens */
+        @media (max-width: 768px) {
+          .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch; /* smooth scrolling on iOS */
+          }
+          table {
+            min-width: 600px; /* ensures horizontal scroll if viewport narrower */
+          }
+          /* Keep all your existing spacing and design intact */
+        }
+      `}</style>
+
+      <div style={{ padding: "30px", maxWidth: "900px", margin: "auto" }}>
+        <h1>Shopping Cart</h1>
+        <div className="table-container">
+          <table
+            style={{
+              width: "100%",
+              borderCollapse: "collapse",
+              marginTop: "20px",
+              marginBottom: "40px",
+            }}
+          >
+            <thead>
+              <tr style={{ borderBottom: "2px solid #ccc" }}>
+                <th style={{ textAlign: "left", padding: "10px" }}>Product</th>
+                <th style={{ textAlign: "center", padding: "10px" }}>Price</th>
+                <th style={{ textAlign: "center", padding: "10px" }}>Quantity</th>
+                <th style={{ textAlign: "center", padding: "10px" }}>Subtotal</th>
+                <th style={{ padding: "10px" }}>Remove</th>
+              </tr>
+            </thead>
+            <tbody>
+              {cartItems.map(({ id, title, price, quantity, image }) => (
+                <tr key={id} style={{ borderBottom: "1px solid #eee" }}>
+                  <td
+                    className="product-info"
+                    style={{ padding: "10px", display: "flex", alignItems: "center" }}
+                  >
+                    <img
+                      src={image}
+                      alt={title}
+                      style={{
+                        height: "50px",
+                        marginRight: "15px",
+                        objectFit: "contain",
+                      }}
+                    />
+                    <span>{title.length > 40 ? title.slice(0, 37) + "..." : title}</span>
+                  </td>
+                  <td style={{ textAlign: "center" }}>${price.toFixed(2)}</td>
+                  <td
+                    style={{ textAlign: "center" }}
+                    className="quantity-controls"
+                  >
+                    <button
+                      onClick={() => updateQuantity(id, -1)}
+                      style={{ marginRight: "10px" }}
+                    >
+                      -
+                    </button>
+                    {quantity}
+                    <button
+                      onClick={() => updateQuantity(id, +1)}
+                      style={{ marginLeft: "10px" }}
+                    >
+                      +
+                    </button>
+                  </td>
+                  <td style={{ textAlign: "center" }}>
+                    ${(price * quantity).toFixed(2)}
+                  </td>
+                  <td style={{ textAlign: "center" }}>
+                    <button onClick={() => removeFromCart(id)}>X</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <h2 style={{ textAlign: "right" }}>Total: ${totalPrice.toFixed(2)}</h2>
+        <div style={{ textAlign: "right", marginTop: "20px" }}>
+          <button
+            onClick={() => alert("Proceed to checkout (not implemented)")}
+            style={{
+              padding: "10px 20px",
+              backgroundColor: "#007bff",
+              color: "white",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+            }}
+          >
+            Checkout
+          </button>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
